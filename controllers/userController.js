@@ -4,21 +4,20 @@ import jwt from "jsonwebtoken";
 // Register User
 export const registerUser = async (req, res) => {
   try {
-    const { name, email, password, mobile } = req.body;
+    const { name, password, mobile } = req.body;
 
-    const existingUser = await User.findOne({ $or: [{ email }, { mobile }] });
+    const existingUser = await User.findOne({ mobile });
     if (existingUser) {
       return res.status(400).json({ message: "User already exists" });
     }
 
-    const user = await User.create({ name, email, password, mobile });
+    const user = await User.create({ name, password, mobile });
 
     res.status(201).json({
       message: "User registered successfully",
       user: {
         id: user._id,
         name: user.name,
-        email: user.email,
         mobile: user.mobile,
       },
     });
@@ -30,9 +29,9 @@ export const registerUser = async (req, res) => {
 // Login User
 export const loginUser = async (req, res) => {
   try {
-    const { email, password } = req.body;
+    const { mobile, password } = req.body;
 
-    const user = await User.findOne({ email });
+    const user = await User.findOne({ mobile });
     if (!user) {
       return res.status(401).json({ message: "Invalid credentials" });
     }
@@ -47,7 +46,7 @@ export const loginUser = async (req, res) => {
     }
 
     const token = jwt.sign(
-      { sub: user._id, email: user.email, tv: user.tokenVersion },
+      { sub: user._id, mobile: user.mobile, tv: user.tokenVersion },
       process.env.JWT_SECRET,
       { expiresIn: "12h" }
     );

@@ -11,15 +11,19 @@ export const authenticateAdmin = async (req, res, next) => {
     if (!token) return res.status(401).json({ message: "Admin token missing" });
 
     const decoded = jwt.verify(token, JWT_SECRET);
-    const admin = await Admin.findById(decoded.sub);
+    const admin = await Admin.findById(decoded.sub).select("+tokenVersion");
 
     if (!admin) {
       return res.status(401).json({ message: "Invalid admin token" });
     }
 
+    if (admin.tokenVersion !== decoded.tv) {
+      return res.status(401).json({ message: "Token expired, please login again" });
+    }
+
     req.admin = { id: admin._id.toString(), adminId: admin.adminId, name: admin.name };
     next();
   } catch (err) {
-    return res.status(401).json({ message: "Unauthorized (admin)", error: err.message });
+    return res.status(401).json({ message: "Unauthorized" });
   }
 };

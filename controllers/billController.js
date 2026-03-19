@@ -7,6 +7,14 @@ export const uploadBill = async (req, res) => {
   try {
     const { billName, billNumber, billImage, date, amount } = req.body;
 
+    if (!billName || !billNumber || !billImage || !date || !amount) {
+      return res.status(400).json({ message: "All fields are required" });
+    }
+
+    if (amount <= 0) {
+      return res.status(400).json({ message: "Amount must be greater than 0" });
+    }
+
     const bill = await Bill.create({
       userId: req.user.sub,
       billName,
@@ -173,10 +181,12 @@ export const setPointConfiguration = async (req, res) => {
   try {
     const { amountPerPoint } = req.body;
 
-    // Deactivate all previous settings
+    if (!amountPerPoint || amountPerPoint <= 0) {
+      return res.status(400).json({ message: "amountPerPoint must be greater than 0" });
+    }
+
     await PointSetting.updateMany({}, { isActive: false });
 
-    // Create new setting
     const pointSetting = await PointSetting.create({
       amountPerPoint,
       isActive: true,

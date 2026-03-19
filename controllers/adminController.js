@@ -1,5 +1,5 @@
 import jwt from "jsonwebtoken";
-import bcrypt from "bcrypt";
+import bcrypt from "bcryptjs";
 import Admin from "../models/Admin.js";
 
 const JWT_SECRET = process.env.JWT_SECRET;
@@ -46,7 +46,7 @@ export const createAdmin = async (req, res) => {
         .json({ message: "Admin with this adminId already exists." });
     }
 
-    const hash = await bcrypt.hash(password, SALT_ROUNDS);
+    const hash = await bcrypt.hash(password, 10);
     const admin = await Admin.create({ adminId, password: hash, name });
 
     return res.status(201).json({

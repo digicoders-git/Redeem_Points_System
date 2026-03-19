@@ -7,6 +7,14 @@ export const addReward = async (req, res) => {
   try {
     const { rewardName, rewardImage, pointsRequired, description } = req.body;
 
+    if (!rewardName || !rewardImage || !pointsRequired) {
+      return res.status(400).json({ message: "rewardName, rewardImage and pointsRequired are required" });
+    }
+
+    if (pointsRequired <= 0) {
+      return res.status(400).json({ message: "pointsRequired must be greater than 0" });
+    }
+
     const reward = await Reward.create({
       rewardName,
       rewardImage,
