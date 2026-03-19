@@ -5,22 +5,21 @@ import PointSetting from "../models/PointSetting.js";
 // User: Upload Bill
 export const uploadBill = async (req, res) => {
   try {
-    const { billName, billNumber, billImage, date, amount } = req.body;
-
-    if (!billName || !billNumber || !billImage || !date || !amount) {
-      return res.status(400).json({ message: "All fields are required" });
+    if (!req.file) {
+      return res.status(400).json({ message: "Bill file is required" });
     }
 
-    if (amount <= 0) {
-      return res.status(400).json({ message: "Amount must be greater than 0" });
+    const { amount } = req.body;
+
+    if (!amount || amount <= 0) {
+      return res.status(400).json({ message: "Valid amount is required" });
     }
+
+    const billImage = `${req.protocol}://${req.get("host")}/uploads/bills/${req.file.filename}`;
 
     const bill = await Bill.create({
       userId: req.user.sub,
-      billName,
-      billNumber,
       billImage,
-      date,
       amount,
     });
 

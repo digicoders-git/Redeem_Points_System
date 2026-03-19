@@ -7,22 +7,8 @@ const billSchema = new mongoose.Schema(
       ref: "User",
       required: true,
     },
-    billName: {
-      type: String,
-      required: true,
-      trim: true,
-    },
-    billNumber: {
-      type: String,
-      required: true,
-      trim: true,
-    },
     billImage: {
       type: String,
-      required: true,
-    },
-    date: {
-      type: Date,
       required: true,
     },
     amount: {

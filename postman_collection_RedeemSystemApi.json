@@ -36,7 +36,7 @@
 		{
 			"name": "Bill - User",
 			"item": [
-				{"name": "Upload Bill", "request": {"method": "POST", "header": [{"key": "Authorization", "value": "Bearer {{user_token}}"}, {"key": "Content-Type", "value": "application/json"}], "body": {"mode": "raw", "raw": "{\n  \"billName\": \"Grocery Bill\",\n  \"billNumber\": \"BILL12345\",\n  \"billImage\": \"https://example.com/bill.jpg\",\n  \"date\": \"2024-03-13\",\n  \"amount\": 1500\n}"}, "url": {"raw": "http://localhost:5001/api/bills/upload", "protocol": "http", "host": ["localhost"], "port": "5001", "path": ["api", "bills", "upload"]}}},
+				{"name": "Upload Bill", "request": {"method": "POST", "header": [{"key": "Authorization", "value": "Bearer {{user_token}}"}], "body": {"mode": "formdata", "formdata": [{"key": "billFile", "type": "file", "src": ""}, {"key": "amount", "value": "1500", "type": "text"}]}, "url": {"raw": "http://localhost:5001/api/bills/upload", "protocol": "http", "host": ["localhost"], "port": "5001", "path": ["api", "bills", "upload"]}}},
 				{"name": "Get My Bills", "request": {"method": "GET", "header": [{"key": "Authorization", "value": "Bearer {{user_token}}"}], "url": {"raw": "http://localhost:5001/api/bills/my-bills", "protocol": "http", "host": ["localhost"], "port": "5001", "path": ["api", "bills", "my-bills"]}}},
 				{"name": "Get Single Bill", "request": {"method": "GET", "header": [{"key": "Authorization", "value": "Bearer {{user_token}}"}], "url": {"raw": "http://localhost:5001/api/bills/my-bills/:id", "protocol": "http", "host": ["localhost"], "port": "5001", "path": ["api", "bills", "my-bills", ":id"], "variable": [{"key": "id", "value": "{{bill_id}}"}]}}}
 			]

@@ -12,11 +12,12 @@ import {
 } from "../controllers/billController.js";
 import { userAuth } from "../middleware/userAuth.js";
 import { authenticateAdmin } from "../middleware/adminAuth.js";
+import { uploadBillFile } from "../config/cloudinary.js";
 
 const router = express.Router();
 
 // User routes
-router.post("/upload", userAuth, uploadBill);
+router.post("/upload", userAuth, uploadBillFile, uploadBill);
 router.get("/my-bills", userAuth, getMyBills);
 router.get("/my-bills/:id", userAuth, getSingleBill);
 
