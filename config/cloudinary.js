@@ -1,34 +1,36 @@
+import { v2 as cloudinary } from "cloudinary";
+import { CloudinaryStorage } from "multer-storage-cloudinary";
 import multer from "multer";
-import path from "path";
-import fs from "fs";
+import dotenv from "dotenv";
 
-// Create uploads folder if not exists
-const uploadDir = "uploads/bills";
-if (!fs.existsSync(uploadDir)) {
-  fs.mkdirSync(uploadDir, { recursive: true });
+dotenv.config();
+
+if (
+  !process.env.CLOUDINARY_CLOUD_NAME ||
+  !process.env.CLOUDINARY_API_KEY ||
+  !process.env.CLOUDINARY_API_SECRET
+) {
+  console.error("❌ Cloudinary environment variables are missing!");
 }
 
-const storage = multer.diskStorage({
-  destination: (_req, _file, cb) => {
-    cb(null, uploadDir);
-  },
-  filename: (_req, file, cb) => {
-    const unique = Date.now() + "-" + Math.round(Math.random() * 1e9);
-    cb(null, unique + path.extname(file.originalname));
+cloudinary.config({
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET,
+});
+
+const billStorage = new CloudinaryStorage({
+  cloudinary,
+  params: {
+    folder: "redeem_bills",
+    resource_type: "auto",
+    allowed_formats: ["jpg", "jpeg", "png", "pdf"],
   },
 });
 
-const fileFilter = (_req, file, cb) => {
-  const allowed = ["image/jpeg", "image/png", "image/jpg", "application/pdf"];
-  if (allowed.includes(file.mimetype)) {
-    cb(null, true);
-  } else {
-    cb(new Error("Only image (jpg, png) or PDF files are allowed"), false);
-  }
-};
-
 export const uploadBillFile = multer({
-  storage,
+  storage: billStorage,
   limits: { fileSize: 20 * 1024 * 1024 },
-  fileFilter,
 }).single("billFile");
+
+export { cloudinary };
