@@ -5,6 +5,7 @@ import {
   getSingleBill,
   getAllBills,
   getBillDetail,
+  editBillAmount,
   approveBill,
   rejectBill,
   setPointConfiguration,
@@ -26,6 +27,7 @@ router.post("/admin/point-config", authenticateAdmin, setPointConfiguration);
 router.get("/admin/point-config", authenticateAdmin, getPointConfiguration);
 router.get("/admin/all", authenticateAdmin, getAllBills);
 router.get("/admin/:id", authenticateAdmin, getBillDetail);
+router.patch("/admin/:id/edit-amount", authenticateAdmin, editBillAmount);
 router.patch("/admin/:id/approve", authenticateAdmin, approveBill);
 router.patch("/admin/:id/reject", authenticateAdmin, rejectBill);
 

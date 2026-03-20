@@ -96,6 +96,37 @@ export const getBillDetail = async (req, res) => {
   }
 };
 
+// Admin: Edit Bill Amount
+export const editBillAmount = async (req, res) => {
+  try {
+    const { amount } = req.body;
+
+    if (!amount || amount <= 0) {
+      return res.status(400).json({ message: "Valid amount is required" });
+    }
+
+    const bill = await Bill.findById(req.params.id);
+
+    if (!bill) {
+      return res.status(404).json({ message: "Bill not found" });
+    }
+
+    if (bill.status !== "pending") {
+      return res.status(400).json({ message: `Cannot edit amount of a ${bill.status} bill` });
+    }
+
+    bill.amount = amount;
+    await bill.save();
+
+    res.json({
+      message: "Bill amount updated successfully",
+      bill,
+    });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
 // Admin: Approve Bill
 export const approveBill = async (req, res) => {
   try {
