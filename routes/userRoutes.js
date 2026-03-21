@@ -9,6 +9,7 @@ import {
   getSingleUser,
   toggleUserStatus,
   deleteUser,
+  changeUserPassword,
 } from "../controllers/userController.js";
 import { userAuth } from "../middleware/userAuth.js";
 import { authenticateAdmin } from "../middleware/adminAuth.js";
