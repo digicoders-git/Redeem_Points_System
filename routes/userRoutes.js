@@ -26,6 +26,7 @@ router.post("/logout", userAuth, logoutUser);
 router.get("/admin/all", authenticateAdmin, getAllUsers);
 router.get("/admin/:id", authenticateAdmin, getSingleUser);
 router.patch("/admin/:id/status", authenticateAdmin, toggleUserStatus);
+router.patch("/admin/:id/change-password", authenticateAdmin, changeUserPassword);
 router.delete("/admin/:id", authenticateAdmin, deleteUser);
 
 export default router;
