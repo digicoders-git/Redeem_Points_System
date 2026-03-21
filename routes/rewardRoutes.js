@@ -11,6 +11,7 @@ import {
   getRedemptionDetail,
   approveRedemption,
   rejectRedemption,
+  deliverRedemption,
 } from "../controllers/rewardController.js";
 import { userAuth } from "../middleware/userAuth.js";
 import { authenticateAdmin } from "../middleware/adminAuth.js";
@@ -33,5 +34,6 @@ router.get("/admin/redemptions", authenticateAdmin, getAllRedemptions);
 router.get("/admin/redemptions/:id", authenticateAdmin, getRedemptionDetail);
 router.patch("/admin/redemptions/:id/approve", authenticateAdmin, approveRedemption);
 router.patch("/admin/redemptions/:id/reject", authenticateAdmin, rejectRedemption);
+router.patch("/admin/redemptions/:id/deliver", authenticateAdmin, deliverRedemption);
 
 export default router;

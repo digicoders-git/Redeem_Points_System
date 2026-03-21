@@ -262,3 +262,30 @@ export const rejectRedemption = async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 };
+
+// Admin: Mark Redemption as Delivered
+export const deliverRedemption = async (req, res) => {
+  try {
+    const redemption = await Redemption.findById(req.params.id);
+
+    if (!redemption) {
+      return res.status(404).json({ message: "Redemption not found" });
+    }
+
+    if (redemption.status !== "approved") {
+      return res
+        .status(400)
+        .json({ message: "Only approved redemptions can be marked as delivered" });
+    }
+
+    redemption.status = "delivered";
+    await redemption.save();
+
+    res.json({
+      message: "Redemption marked as delivered",
+      redemption,
+    });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
