@@ -82,11 +82,12 @@ export const getProfile = async (req, res) => {
 // Update Profile
 export const updateProfile = async (req, res) => {
   try {
-    const { name, mobile } = req.body;
+    const { name, mobile, profilePhoto } = req.body;
     const updates = {};
 
     if (name) updates.name = name;
     if (mobile) updates.mobile = mobile;
+    if (profilePhoto !== undefined) updates.profilePhoto = profilePhoto;
 
     const user = await User.findByIdAndUpdate(req.user.sub, updates, {
       new: true,
