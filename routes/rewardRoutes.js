@@ -3,6 +3,7 @@ import {
   addReward,
   getAllRewardsAdmin,
   updateReward,
+  toggleRewardStatus,
   deleteReward,
   getAllRewardsUser,
   applyRedemption,
@@ -28,6 +29,7 @@ router.get("/user/my-redemptions", userAuth, getMyRedemptions);
 router.post("/admin/add", authenticateAdmin, uploadRewardImages, addReward);
 router.get("/admin/rewards", authenticateAdmin, getAllRewardsAdmin);
 router.put("/admin/rewards/:id", authenticateAdmin, uploadRewardImages, updateReward);
+router.patch("/admin/rewards/:id/toggle", authenticateAdmin, toggleRewardStatus);
 router.delete("/admin/rewards/:id", authenticateAdmin, deleteReward);
 
 // Admin routes - Redemptions

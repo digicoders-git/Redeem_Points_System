@@ -73,6 +73,19 @@ export const updateReward = async (req, res) => {
   }
 };
 
+// Admin: Toggle Reward Active Status
+export const toggleRewardStatus = async (req, res) => {
+  try {
+    const reward = await Reward.findById(req.params.id);
+    if (!reward) return res.status(404).json({ message: "Reward not found" });
+    reward.isActive = !reward.isActive;
+    await reward.save();
+    res.json({ message: "Status updated", reward });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
 // Admin: Delete Reward
 export const deleteReward = async (req, res) => {
   try {
