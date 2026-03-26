@@ -12,6 +12,8 @@ import adminRoutes from "./routes/adminRoutes.js";
 import userRoutes from "./routes/userRoutes.js";
 import billRoutes from "./routes/billRoutes.js";
 import rewardRoutes from "./routes/rewardRoutes.js";
+import termsRoutes from "./routes/termsRoutes.js";
+import { seedTerms } from "./controllers/termsController.js";
 
 
 const app = express();
@@ -40,12 +42,14 @@ app.use("/api/admin/login", authLimiter);
 
 // Connect DB
 await connectDB();
+await seedTerms();
 
 // Mount routes
 app.use("/api/admin", adminRoutes);
 app.use("/api/users", userRoutes);
 app.use("/api/bills", billRoutes);
 app.use("/api/rewards", rewardRoutes);
+app.use("/api/terms", termsRoutes);
 
 // Health / root
 app.get("/", (_req, res) => res.send("✅ API is running..."));
