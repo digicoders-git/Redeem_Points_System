@@ -33,4 +33,18 @@ export const uploadBillFile = multer({
   limits: { fileSize: 20 * 1024 * 1024 },
 }).single("billFile");
 
+const rewardStorage = new CloudinaryStorage({
+  cloudinary,
+  params: {
+    folder: "redeem_rewards",
+    resource_type: "image",
+    allowed_formats: ["jpg", "jpeg", "png", "webp"],
+  },
+});
+
+export const uploadRewardImages = multer({
+  storage: rewardStorage,
+  limits: { fileSize: 5 * 1024 * 1024 },
+}).array("rewardImages", 5);
+
 export { cloudinary };

@@ -9,7 +9,11 @@ const rewardSchema = new mongoose.Schema(
     },
     rewardImage: {
       type: String,
-      required: true,
+      default: "",
+    },
+    rewardImages: {
+      type: [String],
+      default: [],
     },
     pointsRequired: {
       type: Number,

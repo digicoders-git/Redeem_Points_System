@@ -7,25 +7,27 @@ export const addReward = async (req, res) => {
   try {
     const { rewardName, rewardImage, pointsRequired, description } = req.body;
 
-    if (!rewardName || !rewardImage || !pointsRequired) {
-      return res.status(400).json({ message: "rewardName, rewardImage and pointsRequired are required" });
+    if (!rewardName || !pointsRequired) {
+      return res.status(400).json({ message: "rewardName and pointsRequired are required" });
     }
 
     if (pointsRequired <= 0) {
       return res.status(400).json({ message: "pointsRequired must be greater than 0" });
     }
 
+    // Handle uploaded images from multer
+    const uploadedImages = req.files ? req.files.map((f) => f.path) : [];
+    const rewardImages = uploadedImages.length > 0 ? uploadedImages : (rewardImage ? [rewardImage] : []);
+
     const reward = await Reward.create({
       rewardName,
-      rewardImage,
+      rewardImage: rewardImages[0] || "",
+      rewardImages,
       pointsRequired,
       description,
     });
 
-    res.status(201).json({
-      message: "Reward added successfully",
-      reward,
-    });
+    res.status(201).json({ message: "Reward added successfully", reward });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
@@ -44,23 +46,26 @@ export const getAllRewardsAdmin = async (req, res) => {
 // Admin: Update Reward
 export const updateReward = async (req, res) => {
   try {
-    const { rewardName, rewardImage, pointsRequired, description, isActive } =
-      req.body;
+    const { rewardName, rewardImage, pointsRequired, description, isActive } = req.body;
 
     const updates = {};
     if (rewardName) updates.rewardName = rewardName;
-    if (rewardImage) updates.rewardImage = rewardImage;
     if (pointsRequired) updates.pointsRequired = pointsRequired;
     if (description !== undefined) updates.description = description;
     if (isActive !== undefined) updates.isActive = isActive;
 
-    const reward = await Reward.findByIdAndUpdate(req.params.id, updates, {
-      new: true,
-    });
-
-    if (!reward) {
-      return res.status(404).json({ message: "Reward not found" });
+    // Handle uploaded images
+    const uploadedImages = req.files ? req.files.map((f) => f.path) : [];
+    if (uploadedImages.length > 0) {
+      updates.rewardImages = uploadedImages;
+      updates.rewardImage = uploadedImages[0];
+    } else if (rewardImage !== undefined) {
+      updates.rewardImage = rewardImage;
+      if (rewardImage) updates.rewardImages = [rewardImage];
     }
+
+    const reward = await Reward.findByIdAndUpdate(req.params.id, updates, { new: true });
+    if (!reward) return res.status(404).json({ message: "Reward not found" });
 
     res.json({ message: "Reward updated successfully", reward });
   } catch (error) {

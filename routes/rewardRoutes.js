@@ -15,6 +15,7 @@ import {
 } from "../controllers/rewardController.js";
 import { userAuth } from "../middleware/userAuth.js";
 import { authenticateAdmin } from "../middleware/adminAuth.js";
+import { uploadRewardImages } from "../config/cloudinary.js";
 
 const router = express.Router();
 
@@ -24,9 +25,9 @@ router.post("/user/apply", userAuth, applyRedemption);
 router.get("/user/my-redemptions", userAuth, getMyRedemptions);
 
 // Admin routes - Rewards
-router.post("/admin/add", authenticateAdmin, addReward);
+router.post("/admin/add", authenticateAdmin, uploadRewardImages, addReward);
 router.get("/admin/rewards", authenticateAdmin, getAllRewardsAdmin);
-router.put("/admin/rewards/:id", authenticateAdmin, updateReward);
+router.put("/admin/rewards/:id", authenticateAdmin, uploadRewardImages, updateReward);
 router.delete("/admin/rewards/:id", authenticateAdmin, deleteReward);
 
 // Admin routes - Redemptions
