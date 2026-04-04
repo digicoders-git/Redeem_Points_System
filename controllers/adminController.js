@@ -3,17 +3,13 @@ import bcrypt from "bcryptjs";
 import Admin from "../models/Admin.js";
 
 const JWT_SECRET = process.env.JWT_SECRET;
-const JWT_EXPIRES_IN = process.env.JWT_EXPIRES_IN || "1h";
 const SALT_ROUNDS = parseInt(process.env.BCRYPT_SALT_ROUNDS || "12", 10);
 
 // helpers
 const signJwt = (admin) =>
   jwt.sign(
     { sub: String(admin._id), adminId: admin.adminId, tv: admin.tokenVersion },
-    JWT_SECRET,
-    {
-      expiresIn: JWT_EXPIRES_IN,
-    }
+    JWT_SECRET
   );
 
   
@@ -116,6 +112,32 @@ export const listAdmins = async (_req, res) => {
   } catch (err) {
     console.error("listAdmins error:", err);
     return res.status(500).json({ message: "Server error" });
+  }
+};
+
+// Change Admin Password
+export const changeAdminPassword = async (req, res) => {
+  try {
+    const { currentPassword, newPassword } = req.body;
+    if (!currentPassword || !newPassword)
+      return res.status(400).json({ message: "currentPassword and newPassword are required" });
+    if (newPassword.length < 6)
+      return res.status(400).json({ message: "New password must be at least 6 characters" });
+
+    const admin = await Admin.findById(req.admin.id).select("+password +tokenVersion");
+    if (!admin) return res.status(404).json({ message: "Admin not found" });
+
+    const ok = await bcrypt.compare(currentPassword, admin.password);
+    if (!ok) return res.status(401).json({ message: "Current password is incorrect" });
+
+    admin.password = await bcrypt.hash(newPassword, SALT_ROUNDS);
+    admin.tokenVersion += 1;
+    await admin.save();
+
+    const token = signJwt(admin);
+    res.json({ message: "Password changed successfully", token });
+  } catch (err) {
+    res.status(500).json({ message: "Server error" });
   }
 };
 
