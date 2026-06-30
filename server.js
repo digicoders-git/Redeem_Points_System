@@ -72,7 +72,7 @@ app.use((req, res) =>
 // Global error handler
 app.use((err, _req, res, _next) => {
   console.error("Unhandled error:", err);
-  res.status(500).json({ message: "Internal server error" });
+  res.status(err.status || 500).json({ message: err.message || "Internal server error" });
 });
 
 const PORT = process.env.PORT || 5000;

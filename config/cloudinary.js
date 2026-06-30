@@ -24,7 +24,7 @@ const billStorage = new CloudinaryStorage({
   params: {
     folder: "redeem_bills",
     resource_type: "auto",
-    allowed_formats: ["jpg", "jpeg", "png", "pdf"],
+    allowed_formats: ["jpg", "jpeg", "png", "pdf", "webp", "heic", "heif"],
   },
 });
 
@@ -38,7 +38,7 @@ const rewardStorage = new CloudinaryStorage({
   params: {
     folder: "redeem_rewards",
     resource_type: "image",
-    allowed_formats: ["jpg", "jpeg", "png", "webp"],
+    allowed_formats: ["jpg", "jpeg", "png", "webp", "heic", "heif"],
   },
 });
 
